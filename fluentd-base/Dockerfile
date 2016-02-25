@@ -45,6 +45,8 @@ ENV FLUENTD_CONF="fluent.conf"
 RUN fluent-gem install td
 RUN gem install fluent-plugin-td
 RUN gem install fluent-plugin-parser
+RUN gem install fluent-plugin-elasticsearch
+RUN gem install fluent-plugin-typecast
 
 
 RUN mkdir -p /var/log

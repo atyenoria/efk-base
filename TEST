@@ -1,0 +1,121 @@
+curl -XPUT 'http://l.com:9200/wantedly-demo' -d \
+'{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "pos_filter": {
+          "type": "kuromoji_part_of_speech",
+          "stoptags": [
+            "助詞-格助詞-一般",
+            "助詞-終助詞"
+          ]
+        },
+        "greek_lowercase_filter": {
+          "type": "lowercase",
+          "language": "greek"
+        }
+      },
+      "tokenizer": {
+        "kuromoji": {
+          "type": "kuromoji_tokenizer"
+        },
+        "ngram_tokenizer": {
+          "type": "nGram",
+          "min_gram": "2",
+          "max_gram": "3",
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        }
+      },
+      "analyzer": {
+        "kuromoji_analyzer": {
+          "type": "custom",
+          "tokenizer": "kuromoji_tokenizer",
+          "filter": [
+            "kuromoji_baseform",
+            "pos_filter",
+            "greek_lowercase_filter",
+            "cjk_width"
+          ]
+        },
+        "ngram_analyzer": {
+          "tokenizer": "ngram_tokenizer"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "company": {
+      "_source": {
+        "enabled": true
+      },
+      "_all": {
+        "enabled": true,
+        "analyzer": "kuromoji_analyzer"
+      },
+      "properties": {
+        "id": {
+          "type": "integer",
+          "index": "not_analyzed"
+        },
+        "name": {
+          "type": "string",
+          "index": "analyzed",
+          "analyzer": "ngram_analyzer"
+        },
+        "location": {
+          "type": "string",
+          "index": "analyzed",
+          "analyzer": "kuromoji_analyzer"
+        }
+      }
+    },
+    "project": {
+      "_source": {
+        "enabled": true
+      },
+      "_all": {
+        "enabled": true,
+        "analyzer": "kuromoji_analyzer"
+      },
+      "_parent": {
+        "type": "company"
+      },
+      "properties": {
+        "id": {
+          "type": "integer",
+          "index": "not_analyzed"
+        },
+        "title": {
+          "type": "string",
+          "index": "analyzed",
+          "analyzer": "kuromoji_analyzer"
+        }
+      }
+    }
+  }
+}'
+
+
+
+
+
+
+
+
+
+
+
+
+2016-02-25T04:08:28+00:00 docker.809ad7340bcd {"source":"stdout","log":"time:2016-02-25T13:08:28+09:00\tremote_addr:192.168.99.1\trequest:GET /favicon.ico HTTP/1.1\trequest_method:GET\trequest_length:996\trequest_uri:/favicon.ico\turi:/favicon.ico\tquery_string:-\tstatus:200\tbytes_sent:308\tbody_bytes_sent:0\treferer:http://l.com/\tuseragent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36\tforwardedfor:-\trequest_time:0.000\tupstream_response_time:-\r","container_id":"809ad7340bcd50411cbf1cea0c389e321138b8af4968153e45da4470bbf2d562","container_name":"/app"}
+
+
+
+
+
+
+
+
+
