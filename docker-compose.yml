@@ -26,6 +26,8 @@ kibana:
 
 fluentd:
   build: prod-fluentd
+  volumes:
+    - ./prod-fluentd/log:/fluentd/log
   # tty: true
   # command: /bin/sh
   ports:
